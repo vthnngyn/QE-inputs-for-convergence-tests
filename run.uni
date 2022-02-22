@@ -1,0 +1,30 @@
+#!/bin/bash
+
+#SBATCH --job-name="temp"
+#SBATCH --nodes=8
+#SBATCH --ntasks=72
+#SBATCH --cpus-per-task=4
+#SBATCH --time=129:59:59
+#SBATCH --mem-per-cpu=4GB
+#SBATCH -o stdouttemp
+#SBATCH -e stderrtemp
+#SBATCH --export=ALL
+
+module purge
+module load compilers/intel/2018
+module load mpi/impi/2018-intel
+module load libs/fftw/3.3.8-intel-impi
+module load apps/quantum-espresso/6.5-intel-impi
+
+
+# Go to the directoy from which our job was launched
+cd $SLURM_SUBMIT_DIR
+
+echo "running job"
+echo `which pw.x`
+
+srun pw.x -nk 4 -nb 3 -nt 2 -i temp.in > temp.out
+
+echo "job has finished"
+
+
